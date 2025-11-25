@@ -32,15 +32,15 @@ interface SubmitMessageValue {
   projectName: string;
 }
 
-export class NewRustProjectPanel {
-  public static currentPanel: NewRustProjectPanel | undefined;
+export class NewSwiftProjectPanel {
+  public static currentPanel: NewSwiftProjectPanel | undefined;
 
-  public static readonly viewType = "newPicoRustProject";
+  public static readonly viewType = "newPicoSwiftProject";
 
   private readonly _panel: WebviewPanel;
   private readonly _extensionUri: Uri;
   private readonly _settings: Settings;
-  private readonly _logger: Logger = new Logger("NewRustProjectPanel");
+  private readonly _logger: Logger = new Logger("NewSwiftProjectPanel");
   private _disposables: Disposable[] = [];
 
   private _projectRoot?: Uri;
@@ -50,13 +50,13 @@ export class NewRustProjectPanel {
       ? window.activeTextEditor.viewColumn
       : undefined;
 
-    if (NewRustProjectPanel.currentPanel) {
-      NewRustProjectPanel.currentPanel._panel.reveal(column);
+    if (NewSwiftProjectPanel.currentPanel) {
+      NewSwiftProjectPanel.currentPanel._panel.reveal(column);
       // update already exiting panel with new project root
       if (projectUri) {
-        NewRustProjectPanel.currentPanel._projectRoot = projectUri;
+        NewSwiftProjectPanel.currentPanel._projectRoot = projectUri;
         // update webview
-        void NewRustProjectPanel.currentPanel._panel.webview.postMessage({
+        void NewSwiftProjectPanel.currentPanel._panel.webview.postMessage({
           command: "changeLocation",
           value: projectUri?.fsPath,
         });
@@ -66,8 +66,8 @@ export class NewRustProjectPanel {
     }
 
     const panel = window.createWebviewPanel(
-      NewRustProjectPanel.viewType,
-      "New Rust Pico Project",
+      NewSwiftProjectPanel.viewType,
+      "New Swift Pico Project",
       column || ViewColumn.One,
       getWebviewOptions(extensionUri)
     );
@@ -90,7 +90,7 @@ export class NewRustProjectPanel {
       return;
     }
 
-    NewRustProjectPanel.currentPanel = new NewRustProjectPanel(
+    NewSwiftProjectPanel.currentPanel = new NewSwiftProjectPanel(
       panel,
       settings,
       extensionUri,
@@ -110,7 +110,7 @@ export class NewRustProjectPanel {
     }
 
     // TODO: reload if it was import panel maybe in state
-    NewRustProjectPanel.currentPanel = new NewRustProjectPanel(
+    NewSwiftProjectPanel.currentPanel = new NewSwiftProjectPanel(
       panel,
       settings,
       extensionUri
@@ -233,7 +233,7 @@ export class NewRustProjectPanel {
               await window.withProgress(
                 {
                   location: ProgressLocation.Notification,
-                  title: `Generating Rust Pico project ${
+                  title: `Generating Swift Pico project ${
                     data.projectName ?? "undefined"
                   } in ${this._projectRoot?.fsPath}...`,
                 },
@@ -277,11 +277,11 @@ export class NewRustProjectPanel {
       return;
     }
 
-    // install rust (if necessary)
+    // install swift (if necessary)
     const cargo = await downloadAndInstallRust();
     if (!cargo) {
       void window.showErrorMessage(
-        "Failed to install Rust. Please try again and check your settings."
+        "Failed to install Swift. Please try again and check your settings."
       );
 
       return;
@@ -298,10 +298,10 @@ export class NewRustProjectPanel {
     result = await generateRustProject(projectFolder, data.projectName);
 
     if (!result) {
-      this._logger.error("Failed to generate Rust project.");
+      this._logger.error("Failed to generate Swift project.");
 
       void window.setStatusBarMessage(
-        "Failed to generate Rust project. See the output panel for more details.",
+        "Failed to generate Swift project. See the output panel for more details.",
         7000
       );
 
@@ -318,7 +318,7 @@ export class NewRustProjectPanel {
   }
 
   private async _update(): Promise<void> {
-    this._panel.title = "New Rust Pico Project";
+    this._panel.title = "New Swift Pico Project";
     // TODO: setup latest SDK and Toolchain VB before creating the project
     this._panel.iconPath = Uri.joinPath(
       this._extensionUri,
@@ -343,7 +343,7 @@ export class NewRustProjectPanel {
       await this._updateTheme();
     } else {
       void window.showErrorMessage(
-        "Failed to load webview for new Rust Pico project"
+        "Failed to load webview for new Swift Pico project"
       );
       this.dispose();
     }
@@ -370,7 +370,7 @@ export class NewRustProjectPanel {
   }
 
   public dispose(): void {
-    NewRustProjectPanel.currentPanel = undefined;
+    NewSwiftProjectPanel.currentPanel = undefined;
 
     this._panel.dispose();
 
@@ -422,7 +422,7 @@ export class NewRustProjectPanel {
 
         <link href="${mainStyleUri.toString()}" rel="stylesheet">
 
-        <title>New Pico Rust Project</title>
+        <title>New Pico Swift Project</title>
 
         <script nonce="${nonce}" src="${tailwindcssScriptUri.toString()}"></script>
         <script nonce="${nonce}">
@@ -475,7 +475,7 @@ export class NewRustProjectPanel {
               </div>
 
               <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                Note: Ensure that you have the latest version of the Rustup toolchain manager installed.
+                Note: Ensure that you have the latest version of the Swiftly installed, you can find it in <a href="https://swift.org">Swift.org</a>.
               </h3>
 
               <div class="mt-6 mb-4 col-span-2">
@@ -528,7 +528,7 @@ export class NewRustProjectPanel {
       // support folder names with backslashes on linux and macOS
       this._projectRoot !== undefined
         ? process.platform === "win32"
-          ? this._projectRoot.fsPath.replaceAll("/", "/")
+          ? this._projectRoot.fsPath.replaceAll("/", "\\")
           : this._projectRoot.fsPath
         : ""
     }"/>

@@ -5,6 +5,7 @@ import { NewProjectPanel } from "../webview/newProjectPanel.mjs";
 import { NewMicroPythonProjectPanel } from "../webview/newMicroPythonProjectPanel.mjs";
 import { NewRustProjectPanel } from "../webview/newRustProjectPanel.mjs";
 import { NewZephyrProjectPanel } from "../webview/newZephyrProjectPanel.mjs";
+import { NewSwiftProjectPanel } from "../webview/newSwiftProjectPanel.mjs";
 import { NEW_PROJECT } from "./cmdIds.mjs";
 import { ProjectLang } from "../models/projectLang.mjs";
 
@@ -14,6 +15,7 @@ export default class NewProjectCommand extends CommandWithArgs {
   private static readonly cCppOption = "C/C++";
   private static readonly rustOption = "Rust (experimental)";
   private static readonly zephyrOption = "Zephyr";
+  private static readonly swiftOption = "Swift (experimental)";
 
   constructor(extensionUri: Uri) {
     super(NEW_PROJECT);
@@ -30,6 +32,8 @@ export default class NewProjectCommand extends CommandWithArgs {
       ? NewProjectCommand.rustOption
       : preSelectedType === ProjectLang.zephyr
       ? NewProjectCommand.zephyrOption
+      : preSelectedType === ProjectLang.swift
+      ? NewProjectCommand.swiftOption
       : undefined;
   }
 
@@ -43,6 +47,7 @@ export default class NewProjectCommand extends CommandWithArgs {
           NewProjectCommand.micropythonOption,
           NewProjectCommand.rustOption,
           NewProjectCommand.zephyrOption,
+          NewProjectCommand.swiftOption,
         ],
         {
           placeHolder: "Select which language to use for your new project",
@@ -63,8 +68,11 @@ export default class NewProjectCommand extends CommandWithArgs {
       // create a new project with Rust
       NewRustProjectPanel.createOrShow(this._extensionUri);
     } else if (lang === NewProjectCommand.zephyrOption) {
-      // create a new project with MicroPython
+      // create a new project with Zephyr
       NewZephyrProjectPanel.createOrShow(this._extensionUri);
+    } else if (lang === NewProjectCommand.swiftOption) {
+      // create a new project with Swift
+      NewSwiftProjectPanel.createOrShow(this._extensionUri);
     } else {
       // show webview where the process of creating a new project is continued
       NewProjectPanel.createOrShow(this._extensionUri);

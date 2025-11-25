@@ -50,6 +50,7 @@ const NEW_C_CPP_PROJECT_LABEL = "New C/C++ Project";
 const NEW_MICROPYTHON_PROJECT_LABEL = "New MicroPython Project";
 const NEW_RUST_PROJECT_LABEL = "New Rust Project";
 const NEW_ZEPHYR_PROJECT_LABEL = "New Zephyr Project";
+const NEW_SWIFT_PROJECT_LABEL = "New Swift Project";
 const IMPORT_PROJECT_LABEL = "Import Project";
 const EXAMPLE_PROJECT_LABEL = "New Project From Example";
 const SWITCH_SDK_LABEL = "Switch SDK";
@@ -118,6 +119,9 @@ export class PicoProjectActivityBar
         element.iconPath = new ThemeIcon("file-directory-create");
         break;
       case NEW_ZEPHYR_PROJECT_LABEL:
+        element.iconPath = new ThemeIcon("file-directory-create");
+        break;
+      case NEW_SWIFT_PROJECT_LABEL:
         element.iconPath = new ThemeIcon("file-directory-create");
         break;
       case IMPORT_PROJECT_LABEL:
@@ -239,6 +243,15 @@ export class PicoProjectActivityBar
             command: `${extensionName}.${NEW_PROJECT}`,
             title: NEW_ZEPHYR_PROJECT_LABEL,
             arguments: [ProjectLang.zephyr],
+          }
+        ),
+        new QuickAccessCommand(
+          NEW_SWIFT_PROJECT_LABEL,
+          TreeItemCollapsibleState.None,
+          {
+            command: `${extensionName}.${NEW_PROJECT}`,
+            title: NEW_SWIFT_PROJECT_LABEL,
+            arguments: [ProjectLang.swift],
           }
         ),
         new QuickAccessCommand(

@@ -122,6 +122,7 @@ import {
   ZEPHYR_PICO_W,
 } from "./models/zephyrBoards.mjs";
 import { NewZephyrProjectPanel } from "./webview/newZephyrProjectPanel.mjs";
+import { NewSwiftProjectPanel } from "./webview/newSwiftProjectPanel.mjs";
 import LastUsedDepsStore from "./utils/lastUsedDeps.mjs";
 import { getWebviewOptions } from "./webview/sharedFunctions.mjs";
 import { UninstallerPanel } from "./webview/uninstallerPanel.mjs";
@@ -244,6 +245,17 @@ export async function activate(context: ExtensionContext): Promise<void> {
         // Reset the webview options so we use latest uri for `localResourceRoots`.
         webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
         NewZephyrProjectPanel.revive(webviewPanel, context.extensionUri);
+      },
+    })
+  );
+
+  context.subscriptions.push(
+    window.registerWebviewPanelSerializer(NewSwiftProjectPanel.viewType, {
+      // eslint-disable-next-line @typescript-eslint/require-await
+      async deserializeWebviewPanel(webviewPanel: WebviewPanel): Promise<void> {
+        // Reset the webview options so we use latest uri for `localResourceRoots`.
+        webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
+        NewSwiftProjectPanel.revive(webviewPanel, context.extensionUri);
       },
     })
   );
