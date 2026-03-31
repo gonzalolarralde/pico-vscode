@@ -16,11 +16,8 @@ import Logger from "../logger.mjs";
 import { existsSync } from "fs";
 import { join } from "path";
 import { unknownErrorToString } from "../utils/errorHelper.mjs";
-import {
-  downloadAndInstallRust,
-  installLatestRustRequirements,
-} from "../utils/rustUtil.mjs";
-import { generateRustProject } from "../utils/projectGeneration/projectRust.mjs";
+import { checkSwiftlyInstallation } from "../utils/swiftUtils.mjs";
+import { generateSwiftProject } from "../utils/projectGeneration/projectSwift.mjs";
 import {
   getNonce,
   getProjectFolderDialogOptions,
@@ -270,7 +267,7 @@ export class NewSwiftProjectPanel {
       projectPath.length === 0
     ) {
       void window.showErrorMessage(
-        "Failed to generate MicroPython project. " +
+        "Failed to generate Swift project. " +
           "Please try again and check your settings."
       );
 
@@ -278,8 +275,8 @@ export class NewSwiftProjectPanel {
     }
 
     // install swift (if necessary)
-    const cargo = await downloadAndInstallRust();
-    if (!cargo) {
+    const swiftly = await checkSwiftlyInstallation();
+    if (!swiftly) {
       void window.showErrorMessage(
         "Failed to install Swift. Please try again and check your settings."
       );
@@ -287,15 +284,9 @@ export class NewSwiftProjectPanel {
       return;
     }
 
-    let result = await installLatestRustRequirements(this._extensionUri);
-
-    if (!result) {
-      return;
-    }
-
     const projectFolder = join(projectPath, data.projectName);
 
-    result = await generateRustProject(projectFolder, data.projectName);
+    const result = await generateSwiftProject(projectFolder, data.projectName);
 
     if (!result) {
       this._logger.error("Failed to generate Swift project.");
